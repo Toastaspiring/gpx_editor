@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced GPX Creator</title>
+    <title>GPX Track Builder</title>
     
-    <!-- Tailwind CSS for styling -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Leaflet.js for interactive maps -->
+    <!-- Leaflet.js -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <!-- Leaflet Routing Machine for road following -->
+    <!-- Leaflet Routing Machine -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
-    <!-- SortableJS for Drag and Drop functionality -->
+    <!-- SortableJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     
     <!-- Google Fonts: Inter -->
@@ -24,88 +24,89 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        #map { height: calc(100vh - 300px); cursor: crosshair; }
-        .leaflet-routing-container { display: none; } /* Hide default routing panel */
-        .panel-heading { border-bottom: 1px solid #e5e7eb; padding-bottom: 0.75rem; margin-bottom: 0.75rem; }
-        .list-item { background-color: white; border: 1px solid #d1d5db; padding: 0.5rem; border-radius: 0.375rem; margin-bottom: 0.5rem; cursor: grab; user-select: none; }
-        .list-item:active { cursor: grabbing; }
-        .list-item .handle { cursor: grab; }
-        .list-placeholder { background-color: #e0f2fe; border: 2px dashed #3b82f6; border-radius: 0.375rem; }
-        .sortable-ghost { opacity: 0.4; background: #c7d2fe; }
-        /* Custom Modal Styles */
-        .modal-backdrop {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.5); display: flex;
-            justify-content: center; align-items: center; z-index: 1000;
-            opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s;
-        }
-        .modal-backdrop.visible { opacity: 1; visibility: visible; }
-        .modal-content {
-            background: white; padding: 2rem; border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); text-align: center;
-            transform: scale(0.95); transition: transform 0.3s;
-        }
-        .modal-backdrop.visible .modal-content { transform: scale(1); }
-    </style>
+    <!-- Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-100 flex flex-col h-screen">
+<body class="bg-slate-100 flex flex-col h-screen">
 
-    <!-- Header Section -->
-    <header class="bg-white shadow-md w-full p-4">
-        <div class="container mx-auto flex flex-wrap justify-between items-center gap-4">
-            <h1 class="text-2xl font-bold text-gray-800">Advanced GPX Creator</h1>
-            <div class="flex items-center space-x-4">
-                <div class="flex items-center">
-                    <label for="follow-roads-toggle" class="mr-2 font-medium text-gray-700">Follow Roads:</label>
-                    <input type="checkbox" id="follow-roads-toggle" class="h-6 w-11 rounded-full p-1 bg-gray-200 transition-colors duration-300 ease-in-out appearance-none checked:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2" />
+    <!-- Header -->
+    <header class="bg-white shadow-sm w-full z-10">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-3">
+                <div class="flex items-center gap-3">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12 1.586l-4 4v2.828l-4 4V17a1 1 0 001 1h10a1 1 0 001-1v-2.586l-4-4V5.586l4-4V1.586zM3.707 12.293L6 10V8.414l-4-4V10h3.293L3.707 12.293zM16.293 12.293L14 10V8.414l4-4V10h-3.293L16.293 12.293zM10 16a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                    </svg>
+                    <h1 class="text-xl font-bold text-slate-800">GPX Track Builder</h1>
                 </div>
-                <button id="export-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300 transform hover:scale-105">
-                    Export Final GPX
-                </button>
+                <div class="flex items-center space-x-4">
+                    <button id="export-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-300 flex items-center gap-2" title="Export the final combined course as a GPX file">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Export GPX
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow container mx-auto p-4 flex flex-col lg:flex-row gap-4">
-        <!-- Left Column: Map and Drawing Tools -->
-        <div class="w-full lg:w-3/5 flex flex-col gap-4">
-            <div class="shadow-lg rounded-lg overflow-hidden">
-                <div id="map"></div>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-lg">
-                <div class="panel-heading flex justify-between items-center">
-                    <h2 class="text-xl font-semibold text-gray-700">Drawing Tools</h2>
-                    <span id="drawing-distance" class="text-md font-medium text-gray-600">Distance: 0.00 km</span>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-2 items-center">
-                    <input type="text" id="section-name-input" placeholder="Name for current drawing..." class="flex-grow p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500">
-                    <button id="undo-button" class="w-full sm:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold p-2 rounded-lg transition duration-300" title="Undo last point">Undo</button>
-                    <button id="save-section-button" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-lg transition duration-300">Save Section</button>
-                    <button id="clear-drawing-button" class="w-full sm:w-auto bg-yellow-500 hover:bg-yellow-600 text-white font-bold p-2 rounded-lg transition duration-300">Clear Drawing</button>
-                </div>
+    <div class="flex-grow container mx-auto p-4 flex flex-col md:flex-row gap-4">
+
+        <!-- Left Column: Map -->
+        <div class="w-full md:w-3/5 lg:w-2/3 h-full flex flex-col">
+            <div class="shadow-lg rounded-lg overflow-hidden flex-grow">
+                <div id="map" class="w-full h-full"></div>
             </div>
         </div>
 
-        <!-- Right Column: Course Builder -->
-        <div class="w-full lg:w-2/5 flex flex-col gap-4">
+        <!-- Right Column: Controls -->
+        <div class="w-full md:w-2/5 lg:w-1/3 flex flex-col gap-4">
+
+            <!-- Drawing Tools -->
             <div class="bg-white p-4 rounded-lg shadow-lg">
-                <h2 class="text-xl font-semibold text-gray-700 panel-heading">Saved Sections</h2>
-                <div id="sections-list" class="min-h-[100px] max-h-48 overflow-y-auto p-1">
-                    <p class="text-gray-500 text-center p-4">Draw a route, name it, and save it to see it here.</p>
+                <div class="panel-heading flex justify-between items-center">
+                    <h2 class="text-lg font-semibold text-slate-700">1. Draw Your Path</h2>
+                    <span id="drawing-distance" class="text-sm font-medium text-slate-500">0.00 km</span>
+                </div>
+                <div class="flex items-center my-3">
+                    <label for="follow-roads-toggle" class="mr-3 text-sm font-medium text-slate-600">Snap to Roads:</label>
+                    <input type="checkbox" id="follow-roads-toggle" class="h-6 w-11 rounded-full p-1 bg-slate-200 transition-colors duration-300 ease-in-out appearance-none checked:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2" title="Automatically snap the path to roads between points" />
+                </div>
+                <div class="flex flex-col gap-2">
+                    <input type="text" id="section-name-input" placeholder="Enter a name for this path" class="flex-grow p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500">
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="undo-button" class="bg-slate-500 hover:bg-slate-600 text-white font-bold p-2 rounded-md transition duration-300" title="Remove the last point added">Undo</button>
+                        <button id="clear-drawing-button" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold p-2 rounded-md transition duration-300" title="Clear the current drawing from the map">Clear</button>
+                        <button id="save-section-button" class="bg-green-500 hover:bg-green-600 text-white font-bold p-2 rounded-md transition duration-300 col-span-1" title="Save the current path as a reusable section">Save</button>
+                    </div>
+                    <div id="selection-mode-controls" class="mt-2">
+                         <button id="toggle-selection-mode-button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold p-2 rounded-md transition duration-300">Enter Selection Mode</button>
+                         <div id="selection-actions" class="hidden mt-2 grid grid-cols-2 gap-2">
+                            <button id="create-section-from-selection-button" class="bg-purple-500 hover:bg-purple-600 text-white font-bold p-2 rounded-md transition duration-300">Create Section</button>
+                            <button id="exit-selection-mode-button" class="bg-gray-500 hover:bg-gray-600 text-white font-bold p-2 rounded-md transition duration-300">Exit</button>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <!-- Saved Sections -->
+            <div class="bg-white p-4 rounded-lg shadow-lg">
+                <h2 class="text-lg font-semibold text-slate-700 panel-heading">2. Manage Sections</h2>
+                <div id="sections-list" class="min-h-[120px] max-h-48 overflow-y-auto p-1 mt-2">
+                    <p class="text-slate-500 text-center p-4">Your saved sections will appear here. Drag them to the course builder below.</p>
+                </div>
+            </div>
+
+            <!-- Final Course Builder -->
             <div class="bg-white p-4 rounded-lg shadow-lg flex-grow flex flex-col">
                 <div class="panel-heading flex justify-between items-center">
-                    <h2 class="text-xl font-semibold text-gray-700">Final Course</h2>
-                     <span id="course-distance" class="text-md font-medium text-gray-600">Total: 0.00 km</span>
+                    <h2 class="text-lg font-semibold text-slate-700">3. Build Your Final Course</h2>
+                    <span id="course-distance" class="text-sm font-medium text-slate-500">Total: 0.00 km</span>
                 </div>
-                <p class="text-sm text-gray-500 mb-2">Drag sections from the list above to build your course.</p>
-                <div id="course-sequence-list" class="min-h-[150px] flex-grow bg-gray-50 border rounded-md p-1"></div>
-                <textarea id="gpx-output" class="hidden" readonly></textarea>
-                <button id="clear-course-button" class="mt-2 w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition duration-300">Clear Course</button>
+                <div id="course-sequence-list" class="min-h-[150px] flex-grow bg-slate-50 border-2 border-dashed border-slate-300 rounded-md p-2 mt-2">
+                    <p class="text-slate-400 text-center self-center">Drop sections here</p>
+                </div>
+                <button id="clear-course-button" class="mt-2 w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md transition duration-300" title="Clear all sections from the final course builder">Clear Course</button>
             </div>
         </div>
     </main>
@@ -114,288 +115,10 @@
     <div id="custom-modal" class="modal-backdrop">
         <div class="modal-content">
             <p id="modal-message" class="text-lg mb-4"></p>
-            <button id="modal-close-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded-lg">OK</button>
+            <button id="modal-close-button" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">OK</button>
         </div>
     </div>
 
-    <script>
-        // --- Leaflet Map Initialization ---
-        const map = L.map('map').setView([48.1173, -1.6778], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
-
-        // --- Global State ---
-        let drawingPoints = [];
-        let savedSections = {}; // { id: { name: "...", points: [...] } }
-        let courseSequence = []; // Array of section IDs
-        let drawingPolyline = L.polyline([], { color: 'orange', weight: 5, opacity: 0.8 }).addTo(map);
-        let finalCoursePolyline = L.polyline([], { color: 'blue', weight: 5, opacity: 0.8 }).addTo(map);
-        let drawingMarkers = L.layerGroup().addTo(map);
-        let routingControl = null;
-
-        // --- DOM Element References ---
-        const gpxOutput = document.getElementById('gpx-output');
-        const exportButton = document.getElementById('export-button');
-        const clearDrawingButton = document.getElementById('clear-drawing-button');
-        const clearCourseButton = document.getElementById('clear-course-button');
-        const saveSectionButton = document.getElementById('save-section-button');
-        const sectionNameInput = document.getElementById('section-name-input');
-        const sectionsListEl = document.getElementById('sections-list');
-        const courseSequenceListEl = document.getElementById('course-sequence-list');
-        const followRoadsToggle = document.getElementById('follow-roads-toggle');
-        const undoButton = document.getElementById('undo-button');
-        const drawingDistanceEl = document.getElementById('drawing-distance');
-        const courseDistanceEl = document.getElementById('course-distance');
-        const customModal = document.getElementById('custom-modal');
-        const modalMessage = document.getElementById('modal-message');
-        const modalCloseButton = document.getElementById('modal-close-button');
-
-        // --- Event Listeners ---
-        map.on('click', handleMapClick);
-        clearDrawingButton.addEventListener('click', clearCurrentDrawing);
-        clearCourseButton.addEventListener('click', clearFinalCourse);
-        saveSectionButton.addEventListener('click', saveSection);
-        exportButton.addEventListener('click', exportGPX);
-        followRoadsToggle.addEventListener('change', handleToggleChange);
-        undoButton.addEventListener('click', undoLastPoint);
-        modalCloseButton.addEventListener('click', () => customModal.classList.remove('visible'));
-
-        // --- Utility Functions ---
-        const showModal = (message) => {
-            modalMessage.textContent = message;
-            customModal.classList.add('visible');
-        };
-
-        const calculateDistance = (points) => {
-            let totalDistance = 0;
-            for (let i = 0; i < points.length - 1; i++) {
-                totalDistance += points[i].distanceTo(points[i + 1]);
-            }
-            return (totalDistance / 1000).toFixed(2); // Convert to km
-        };
-
-        // --- Core Drawing & Routing Logic ---
-        function handleToggleChange() {
-            clearCurrentDrawing();
-            if (followRoadsToggle.checked) {
-                initializeRouting();
-            } else if (routingControl) {
-                map.removeControl(routingControl);
-                routingControl = null;
-            }
-        }
-
-        function initializeRouting() {
-            if (routingControl) map.removeControl(routingControl);
-            routingControl = L.Routing.control({
-                waypoints: [],
-                routeWhileDragging: false,
-                addWaypoints: false,
-                createMarker: () => null,
-                lineOptions: { styles: [{color: 'orange', opacity: 0.8, weight: 5}] }
-            }).on('routesfound', (e) => {
-                const route = e.routes[0];
-                drawingPoints = route.coordinates;
-                drawingPolyline.setLatLngs(drawingPoints);
-                drawingDistanceEl.textContent = `Distance: ${(route.summary.totalDistance / 1000).toFixed(2)} km`;
-            }).addTo(map);
-        }
-
-        function handleMapClick(e) {
-            const latlng = e.latlng;
-            L.marker(latlng).addTo(drawingMarkers);
-            if (followRoadsToggle.checked) {
-                if (!routingControl) initializeRouting();
-                routingControl.spliceWaypoints(routingControl.getWaypoints().length, 0, latlng);
-            } else {
-                drawingPoints.push(latlng);
-                drawingPolyline.addLatLng(latlng);
-                drawingDistanceEl.textContent = `Distance: ${calculateDistance(drawingPoints)} km`;
-            }
-        }
-
-        function undoLastPoint() {
-            drawingMarkers.removeLayer(Object.values(drawingMarkers._layers).pop());
-            if (followRoadsToggle.checked && routingControl) {
-                const waypoints = routingControl.getWaypoints();
-                if (waypoints.length > 0) {
-                    routingControl.spliceWaypoints(waypoints.length - 1, 1);
-                }
-            } else {
-                if (drawingPoints.length > 0) {
-                    drawingPoints.pop();
-                    drawingPolyline.setLatLngs(drawingPoints);
-                    drawingDistanceEl.textContent = `Distance: ${calculateDistance(drawingPoints)} km`;
-                }
-            }
-        }
-        
-        function clearCurrentDrawing() {
-            drawingPoints = [];
-            drawingPolyline.setLatLngs([]);
-            drawingMarkers.clearLayers();
-            if (routingControl) routingControl.setWaypoints([]);
-            drawingDistanceEl.textContent = 'Distance: 0.00 km';
-        }
-
-        // --- Section Management ---
-        function saveSection() {
-            const name = sectionNameInput.value.trim();
-            if (!name) return showModal("Please enter a name for the section.");
-            if (drawingPoints.length < 2) return showModal("Please draw a section with at least two points.");
-            
-            const id = `section_${Date.now()}`;
-            savedSections[id] = { name, points: [...drawingPoints] };
-            
-            renderSectionsList();
-            clearCurrentDrawing();
-            sectionNameInput.value = '';
-        }
-        
-        function deleteSection(id) {
-            if (courseSequence.includes(id)) {
-                return showModal("Cannot delete a section that is currently used in the final course.");
-            }
-            delete savedSections[id];
-            renderSectionsList();
-        }
-
-        // --- Course Building ---
-        function rebuildFinalCourse() {
-            let finalPoints = [];
-            courseSequence.forEach(sectionId => {
-                const section = savedSections[sectionId];
-                if (section) finalPoints.push(...section.points);
-            });
-            finalCoursePolyline.setLatLngs(finalPoints);
-            courseDistanceEl.textContent = `Total: ${calculateDistance(finalPoints)} km`;
-            renderCourseSequenceList();
-        }
-
-        function clearFinalCourse() {
-            courseSequence = [];
-            rebuildFinalCourse();
-        }
-
-        // --- UI Rendering ---
-        function renderSectionsList() {
-            sectionsListEl.innerHTML = '';
-            if (Object.keys(savedSections).length === 0) {
-                sectionsListEl.innerHTML = '<p class="text-gray-500 text-center p-4">Your saved sections will appear here.</p>';
-                return;
-            }
-            for (const [id, section] of Object.entries(savedSections)) {
-                sectionsListEl.innerHTML += `
-                    <div class="list-item flex items-center justify-between" data-id="${id}">
-                        <span class="font-medium text-gray-800">${section.name}</span>
-                        <div class="flex items-center">
-                             <button onclick="deleteSection('${id}')" class="text-red-500 hover:text-red-700 p-1" title="Delete Section">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
-                            </button>
-                        </div>
-                    </div>`;
-            }
-        }
-
-        function renderCourseSequenceList() {
-            courseSequenceListEl.innerHTML = '';
-            if (courseSequence.length === 0) {
-                 courseSequenceListEl.innerHTML = '<p class="text-gray-400 text-center p-4">Drop sections here</p>';
-            }
-            courseSequence.forEach((id, index) => {
-                const section = savedSections[id];
-                courseSequenceListEl.innerHTML += `
-                    <div class="list-item flex items-center justify-between" data-id="${id}" data-index="${index}">
-                        <div class="flex items-center">
-                            <svg class="h-5 w-5 text-gray-400 mr-2 handle" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                            <span class="font-medium text-gray-800">${section.name}</span>
-                        </div>
-                        <div class="flex items-center">
-                            <button onclick="reverseSectionInCourse(${index})" class="text-blue-500 hover:text-blue-700 p-1" title="Reverse Direction">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 2.293a1 1 0 010 1.414L7.414 9H15a1 1 0 110 2H7.414l5.293 5.293a1 1 0 01-1.414 1.414l-7-7a1 1 0 010-1.414l7-7a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>
-                            </button>
-                            <button onclick="removeSectionFromCourse(${index})" class="text-red-500 hover:text-red-700 p-1" title="Remove From Course">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
-                            </button>
-                        </div>
-                    </div>`;
-            });
-        }
-        
-        // Functions callable from inline HTML
-        window.removeSectionFromCourse = (index) => {
-            courseSequence.splice(index, 1);
-            rebuildFinalCourse();
-        };
-        window.reverseSectionInCourse = (index) => {
-            const sectionId = courseSequence[index];
-            savedSections[sectionId].points.reverse();
-            rebuildFinalCourse();
-        };
-        window.deleteSection = deleteSection;
-
-
-        // --- Drag and Drop Initialization ---
-        new Sortable(sectionsListEl, {
-            group: { name: 'sections', pull: 'clone', put: false },
-            sort: false,
-            animation: 150,
-        });
-
-        new Sortable(courseSequenceListEl, {
-            group: 'sections',
-            animation: 150,
-            ghostClass: 'sortable-ghost',
-            handle: '.handle',
-            onAdd: function (evt) {
-                const id = evt.item.dataset.id;
-                const newIndex = evt.newDraggableIndex;
-                courseSequence.splice(newIndex, 0, id);
-                rebuildFinalCourse();
-                evt.item.remove(); // Remove the cloned item, we render our own list
-            },
-            onUpdate: function (evt) {
-                const [movedItem] = courseSequence.splice(evt.oldDraggableIndex, 1);
-                courseSequence.splice(evt.newDraggableIndex, 0, movedItem);
-                rebuildFinalCourse();
-            },
-        });
-
-        // --- GPX Export ---
-        function generateGPXString() {
-            let finalPoints = [];
-            courseSequence.forEach(id => finalPoints.push(...savedSections[id].points));
-
-            const name = courseSequence.map(id => savedSections[id].name).join(', ');
-            const isoTime = new Date().toISOString();
-            
-            let gpxContent = `<?xml version="1.0" encoding="UTF-8"?>
-<gpx version="1.1" creator="Advanced GPX Creator" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
-    <metadata><name>Final Course: ${name}</name><time>${isoTime}</time></metadata>
-    <trk><name>Assembled Route</name><trkseg>`;
-
-            finalPoints.forEach(p => { gpxContent += `\n            <trkpt lat="${p.lat}" lon="${p.lng}"><time>${isoTime}</time></trkpt>`; });
-            gpxContent += `\n        </trkseg></trk></gpx>`;
-            return gpxContent;
-        }
-
-        function exportGPX() {
-            if (courseSequence.length === 0) return showModal("Please build a final course before exporting.");
-            
-            const gpxData = generateGPXString();
-            const blob = new Blob([gpxData], { type: 'application/gpx+xml' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `course_${new Date().toISOString().slice(0,10)}.gpx`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        }
-
-        // --- Initial UI Setup ---
-        renderSectionsList();
-        renderCourseSequenceList();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
