@@ -191,6 +191,22 @@ document.addEventListener('DOMContentLoaded', () => {
             drawingPoints.splice(index, 0, { lat: latlng.lat, lng: latlng.lng, id: pointIndex });
         }
 
+        // Create popup content immediately
+        const popupContent = document.createElement('div');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerHTML = 'Delete Point';
+        deleteBtn.className = 'bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600';
+        popupContent.appendChild(deleteBtn);
+
+        // Bind popup to the marker
+        marker.bindPopup(popupContent);
+
+        deleteBtn.onclick = () => {
+            const markerId = drawingMarkers.getLayers().indexOf(marker);
+            deletePoint(markerId);
+            map.closePopup();
+        };
+
         marker.on('dragend', (e) => {
             const newLatLng = e.target.getLatLng();
             const markerId = drawingMarkers.getLayers().indexOf(e.target);
@@ -210,17 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     marker.setOpacity(1.0); // Selected style
                 }
             } else {
-                const deleteBtn = document.createElement('button');
-                deleteBtn.innerHTML = 'Delete Point';
-                deleteBtn.className = 'bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600';
-                deleteBtn.onclick = () => {
-                    deletePoint(markerId);
-                    map.closePopup();
-                };
-
-                const popupContent = document.createElement('div');
-                popupContent.appendChild(deleteBtn);
-                marker.bindPopup(popupContent).openPopup();
+                // Just open the already-bound popup
+                marker.openPopup();
             }
         });
 
