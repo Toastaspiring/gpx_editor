@@ -1,0 +1,133 @@
+/* Using a more modern box-sizing approach */
+html, body {
+    box-sizing: border-box;
+}
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f1f5f9; /* bg-slate-100 */
+}
+
+/* Ensure the map takes up the available height in its container */
+#map {
+    height: 100%;
+    cursor: crosshair;
+    border-radius: 0.5rem; /* rounded-lg */
+}
+
+/* Hide the default routing panel from Leaflet Routing Machine */
+.leaflet-routing-container {
+    display: none;
+}
+
+/* Styling for panel headings */
+.panel-heading {
+    border-bottom: 1px solid #e2e8f0; /* border-slate-200 */
+    padding-bottom: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+/* Styling for draggable list items in Sections and Course lists */
+.list-item {
+    background-color: white;
+    border: 1px solid #cbd5e1; /* border-slate-300 */
+    padding: 0.75rem;
+    border-radius: 0.375rem; /* rounded-md */
+    margin-bottom: 0.5rem;
+    cursor: grab;
+    user-select: none;
+    transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.list-item:hover {
+    background-color: #f8fafc; /* bg-slate-50 */
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1), 0 1px 2px -1px rgba(0,0,0,0.1);
+}
+
+.list-item:active {
+    cursor: grabbing;
+    background-color: #e0f2fe; /* A light blue to indicate active drag */
+}
+
+.list-item .handle {
+    cursor: grab;
+}
+
+/* Placeholder style for SortableJS */
+.list-placeholder {
+    background-color: #e0f2fe;
+    border: 2px dashed #3b82f6; /* blue-500 */
+    border-radius: 0.375rem;
+    height: 50px;
+}
+
+/* Ghost class for the item being dragged */
+.sortable-ghost {
+    opacity: 0.5;
+    background: #c7d2fe; /* indigo-200 */
+    border: 1px dashed #4f46e5; /* indigo-600 */
+}
+
+/* Custom Modal Styles */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.modal-backdrop.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 0.5rem; /* rounded-lg */
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+    text-align: center;
+    transform: scale(0.95) translateY(-10px);
+    transition: transform 0.3s ease-out;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal-backdrop.visible .modal-content {
+    transform: scale(1) translateY(0);
+}
+
+/* Custom toggle switch style to match the new theme */
+#follow-roads-toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+}
+
+#follow-roads-toggle:before {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s ease-in-out;
+}
+
+#follow-roads-toggle:checked:before {
+    transform: translateX(20px);
+}
